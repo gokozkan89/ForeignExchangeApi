@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using ForeignExchangeApi.Services;
 
 namespace ForeignExchangeApi.Controllers
 {
@@ -12,24 +13,20 @@ namespace ForeignExchangeApi.Controllers
     [ApiController]
     public class CurrencyController:ControllerBase
     {
-        private static readonly HttpClient client = new HttpClient();
-        private readonly CurrencyContext currencyContext;
-        private HttpReq httpReq = new HttpReq();
-        public CurrencyController(CurrencyContext context)
+        private readonly ICurrencyService currencyServices;
+        public CurrencyController(ICurrencyService currencyServices)
         {
-            currencyContext = context;            
+            this.currencyServices = currencyServices;           
         }
-
-        [HttpGet("{code}")]
-        public ActionResult<Currency> Get(string code)
+        
+        [HttpGet("{Code}", Name="GetCurrency")]
+        public ActionResult<Currency> GetCurrency(string Code)
         {
-            var curreny = currencyContext.Currencies.Find(code);
-            if (curreny==null)
-            {
-                return NotFound();
-            }
-            return curreny;
+            return currencyServices.GetCurrency(Code);
         }
     }
-
 }
+        
+    
+        
+
