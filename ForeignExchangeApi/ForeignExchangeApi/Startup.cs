@@ -24,8 +24,7 @@ namespace ForeignExchangeApi
             services.AddScoped<ICurrencyService, CurrencyService>();
             services.AddScoped<ICurrencyRequestService, CurrencyRequestService>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
-            
+            services.AddScoped(typeof(HttpClientService));
         }
 
         public void Configure(IApplicationBuilder app)

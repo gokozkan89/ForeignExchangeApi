@@ -14,14 +14,18 @@ namespace ForeignExchangeApi.Controllers
     public class CurrencyController:ControllerBase
     {
         private readonly ICurrencyService currencyServices;
-        public CurrencyController(ICurrencyService currencyServices)
+        private readonly HttpClientService httpClientService;
+        public CurrencyController(ICurrencyService currencyServices,HttpClientService httpClientService)
         {
-            this.currencyServices = currencyServices;           
+            this.currencyServices = currencyServices;
+            this.httpClientService = httpClientService;
         }
         
         [HttpGet("{Code}", Name="GetCurrency")]
         public ActionResult<Currency> GetCurrency(string Code)
         {
+            var request = string.Concat("currencies/", Code, "/latest");
+            var currencyResult = httpClientService.Get<Currency>(request);
             return currencyServices.GetCurrency(Code);
         }
     }
