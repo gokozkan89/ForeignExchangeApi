@@ -21,12 +21,17 @@ namespace ForeignExchangeApi.Controllers
             this.httpClientService = httpClientService;
         }
         
-        [HttpGet("{Code}", Name="GetCurrency")]
-        public ActionResult<Currency> GetCurrency(string Code)
+        [HttpGet("{Code}/latest")]
+        public ActionResult<Currency> LatestCurrency(string Code)
         {
             var request = string.Concat("currencies/", Code, "/latest");
-            var currencyResult = httpClientService.Get<Currency>(request);
-            return currencyServices.GetCurrency(Code);
+            return httpClientService.Get<Currency>(request); 
+        }
+        [HttpGet("{Code}/daily")]
+        public ActionResult<List<CurrencyDaily>> DailyCurrency(string Code)
+        {
+            var request = string.Concat("currencies/", Code, "/daily");
+            return httpClientService.GetList<CurrencyDaily>(request);
         }
     }
 }

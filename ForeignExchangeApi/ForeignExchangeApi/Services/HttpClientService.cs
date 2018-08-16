@@ -28,5 +28,12 @@ namespace ForeignExchangeApi.Services
             string data = getResponse.Content.ReadAsStringAsync().Result;
             return JsonConvert.DeserializeObject<T>(data);
         }
+        public List<T> GetList<T>(string endPointName)
+        {
+            var url = BaseUrl + endPointName;
+            var getResponse = httpClient.GetAsync(url).Result;
+            string data = getResponse.Content.ReadAsStringAsync().Result;
+            return JsonConvert.DeserializeObject <List<T>>(data);
+        }
     }
 }
