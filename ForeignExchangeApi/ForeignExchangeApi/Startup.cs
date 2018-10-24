@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ForeignExchangeApi.Services;
+using ForeignExchangeApi.SignalR;
 
 namespace ForeignExchangeApi
 {
@@ -21,14 +22,16 @@ namespace ForeignExchangeApi
        
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<ICurrencyService, CurrencyService>();            
             services.AddScoped(typeof(HttpClientService));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddSignalR();
         }
 
         public void Configure(IApplicationBuilder app)
         {
-           
+            app.UseSignalR(routes => {
+                routes.MapHub<ChatHub>("/chatHub");
+            });
             app.UseMvc();
         }
     }

@@ -10,6 +10,7 @@ namespace ForeignExchangeApi.Models
     {
         [JsonProperty("selling")]
         public double Selling { get; set; }
+
         [JsonProperty("update_date")]
         public long UpdateDate { get; set; }
     }
