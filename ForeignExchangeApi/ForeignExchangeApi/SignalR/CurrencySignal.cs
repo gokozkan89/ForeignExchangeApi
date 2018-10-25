@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using ForeignExchangeApi.Controllers;
+using ForeignExchangeApi.Models;
+using ForeignExchangeApi.Services;
+using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,9 +11,14 @@ namespace ForeignExchangeApi.SignalR
 {
     public class CurrencySignal : Hub
     {
-        public async Task Send(string deneme)
+        private readonly IHttpClientServices currencyServices;
+        public CurrencySignal(IHttpClientServices currencyServices) {
+            this.currencyServices = currencyServices;
+        }
+        public async Task SendCurrenciesValue()
         {
-            await Clients.All.SendAsync("AllCurrency", deneme);
+            var result = currencyServices.GetList<Currency>("currencies/all/latest");
+            await Clients.All.SendAsync("ReceiveCurrenciesValue",result);
         }
 
     }

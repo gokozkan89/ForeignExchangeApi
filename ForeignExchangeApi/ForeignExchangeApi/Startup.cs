@@ -22,16 +22,25 @@ namespace ForeignExchangeApi
        
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped(typeof(HttpClientService));
+            services.AddScoped<ICurrencyServices,CurrencyServices>();
+            services.AddScoped<IHttpClientServices,HttpClientService>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddCors(options => options.AddPolicy("CorsPolicy", builder => {
+                builder
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .WithOrigins("http://localhost:3902");
+            }));
             services.AddSignalR();
+           
         }
 
         public void Configure(IApplicationBuilder app)
         {
             app.UseSignalR(routes => {
-                routes.MapHub<ChatHub>("/chatHub");
+                routes.MapHub<CurrencySignal>("/currenciesValues");
             });
+            app.UseCors("CorsPolicy");
             app.UseMvc();
         }
     }

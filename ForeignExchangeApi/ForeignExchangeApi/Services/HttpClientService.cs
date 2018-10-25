@@ -8,7 +8,7 @@ using System.Web;
 
 namespace ForeignExchangeApi.Services
 {
-    public class HttpClientService
+    public class HttpClientService : IHttpClientServices
     {
         public Dictionary<string,string> Parameters { get; set; }
 
