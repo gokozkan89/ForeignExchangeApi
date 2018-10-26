@@ -1,46 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using ForeignExchangeApi.Models;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+﻿using ForeignExchangeApi.Extensions;
+using ForeignExchangeApi.Handlers;
 using ForeignExchangeApi.Services;
-using ForeignExchangeApi.SignalR;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 
-namespace ForeignExchangeApi
-{
-    public class Startup
-    {
-       
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddScoped<ICurrencyServices,CurrencyServices>();
-            services.AddScoped<IHttpClientServices,HttpClientService>();
+namespace ForeignExchangeApi {
+    public class Startup {
+
+        public void ConfigureServices(IServiceCollection services) {
+            services.AddScoped<ICurrencyServices, CurrencyServices>();
+            services.AddSingleton<IHttpClientServices, HttpClientService>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.AddCors(options => options.AddPolicy("CorsPolicy", builder => {
-                builder
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .WithOrigins("http://localhost:3902");
-            }));
-            services.AddSignalR();
-           
+            services.AddWebSocketManager();
+
         }
 
-        public void Configure(IApplicationBuilder app)
-        {
-            app.UseSignalR(routes => {
-                routes.MapHub<CurrencySignal>("/currenciesValues");
-            });
-            app.UseCors("CorsPolicy");
+        public void Configure(IApplicationBuilder app, IServiceProvider serviceProvider) {
+            app.UseWebSockets();
+            app.MapWebSocketManager("/currency", serviceProvider.GetService<CurrenciesHandler>());
+            app.UseStaticFiles();
             app.UseMvc();
         }
     }

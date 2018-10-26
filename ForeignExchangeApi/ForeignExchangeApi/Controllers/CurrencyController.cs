@@ -1,8 +1,6 @@
 ﻿using FluentScheduler;
 using ForeignExchangeApi.Models;
 using ForeignExchangeApi.Services;
-using ForeignExchangeApi.SignalR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ForeignExchangeApi.Controllers {
@@ -28,21 +26,7 @@ namespace ForeignExchangeApi.Controllers {
             }
             return Json("");
         }
-        [AllowAnonymous]
-        [HttpPost("schedule")]
-        public bool SchedulerStartStop(int Time, string Action) {
-            CurrencySignal currencySignal = new CurrencySignal(currencyServices);
-            var registry = new Registry();
-            if (Action.ToLower() == "start") {
-                JobManager.AddJob(() => currencySignal.SendCurrenciesValue(), (s) => s.ToRunNow().AndEvery(Time).Minutes());
-                return true;
-            } else if (Action.ToLower() == "stop") {
-                JobManager.Stop();
-                return true;
-            } else {
-                return false;
-            }
-        }
+        
 
     }
 }
