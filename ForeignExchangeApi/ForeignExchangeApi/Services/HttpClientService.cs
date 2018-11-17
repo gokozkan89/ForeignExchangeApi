@@ -1,18 +1,14 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Threading.Tasks;
-using System.Web;
 
 namespace ForeignExchangeApi.Services
 {
     public class HttpClientService : IHttpClientServices
     {
-        public Dictionary<string,string> Parameters { get; set; }
+        public Dictionary<string, string> Parameters { get; set; }
 
-        public string BaseUrl { get; set; } = "https://www.doviz.com/api/v1/";
+        public string BaseUrl { get; set; } = "https://www.doviz.com/api/v/";
 
         private readonly HttpClient httpClient;
 
@@ -24,6 +20,7 @@ namespace ForeignExchangeApi.Services
         public T Get<T>(string endPointName)
         {
             var url = BaseUrl + endPointName;
+            httpClient.DefaultRequestHeaders.Add("User-Agent", "Doviz");
             var getResponse = httpClient.GetAsync(url).Result;
             string data = getResponse.Content.ReadAsStringAsync().Result;
             return JsonConvert.DeserializeObject<T>(data);
@@ -31,9 +28,10 @@ namespace ForeignExchangeApi.Services
         public List<T> GetList<T>(string endPointName)
         {
             var url = BaseUrl + endPointName;
-            var getResponse = httpClient.GetAsync(url).Result;
+            httpClient.DefaultRequestHeaders.Add("User-Agent", "Doviz");
+            var getResponse = httpClient.GetAsync(url).Result;  
             string data = getResponse.Content.ReadAsStringAsync().Result;
-            return JsonConvert.DeserializeObject <List<T>>(data);
+            return JsonConvert.DeserializeObject<List<T>>(data);
         }
     }
 }
