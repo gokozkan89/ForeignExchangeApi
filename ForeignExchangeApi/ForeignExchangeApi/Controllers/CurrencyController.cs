@@ -2,6 +2,7 @@
 using ForeignExchangeApi.Models;
 using ForeignExchangeApi.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace ForeignExchangeApi.Controllers {
     [Route("api/v1")]
@@ -25,6 +26,17 @@ namespace ForeignExchangeApi.Controllers {
                 return Json(currencyServices.GetList<CurrencyDaily>(endPoint));
             }
             return Json("");
+        }
+        [Route("{Commodies}/{Codes}/{Time}")]
+        [HttpGet]
+        public JsonResult LatestCurrencies(string Commodies, List<string> Codes, string Time)
+        {
+            List<Currency> currencies = new List<Currency>();
+            foreach (var code in Codes)
+            {
+                currencies.Add(currencyServices.Get<Currency>(string.Concat(Commodies, "/", code, "/", Time)));
+            }
+            return Json(currencies);
         }
         
 
