@@ -4,32 +4,21 @@ using System.Net.Http;
 
 namespace ForeignExchangeApi.Services
 {
-    public class HttpClientService : IHttpClientServices
+    public class HttpClientService : IHttpClientService
     {
         public Dictionary<string, string> Parameters { get; set; }
 
-        public string BaseUrl { get; set; } = "https://www.doviz.com/api/v/";
+        public string BaseUrl { get; set; } = "https://api.canlidoviz.com/web/items?marketId=1&type=0";
 
         private readonly HttpClient httpClient;
 
         public HttpClientService()
         {
             this.httpClient = new HttpClient();
-        }
-
-        public T Get<T>(string endPointName)
-        {
-            var url = BaseUrl + endPointName;
-            httpClient.DefaultRequestHeaders.Add("User-Agent", "Doviz");
-            var getResponse = httpClient.GetAsync(url).Result;
-            string data = getResponse.Content.ReadAsStringAsync().Result;
-            return JsonConvert.DeserializeObject<T>(data);
-        }
-        public List<T> GetList<T>(string endPointName)
-        {
-            var url = BaseUrl + endPointName;
-            httpClient.DefaultRequestHeaders.Add("User-Agent", "Doviz");
-            var getResponse = httpClient.GetAsync(url).Result;  
+        }        
+        public List<T> GetList<T>()
+        {           
+            var getResponse = httpClient.GetAsync(BaseUrl).Result;
             string data = getResponse.Content.ReadAsStringAsync().Result;
             return JsonConvert.DeserializeObject<List<T>>(data);
         }
